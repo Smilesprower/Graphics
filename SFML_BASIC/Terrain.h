@@ -19,10 +19,10 @@ class Terrain
 	sf::Image image;
 	sf::Color color;
 
-	float m_colorHeight[4];
-	const float m_HEIGHT = 6;
+	const float m_HEIGHT = 8;
+	float pixelArray[100][100];
 
-	float getHeight(float x, float y);
+	float getHeight(int x, int y);
 	void setPoint(vector, float, float,float);
 	
 public:
