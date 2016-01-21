@@ -70,7 +70,7 @@ void Terrain::Init(){
 	texCoor = new vector[numVerts];
 
 	//interpolate along the edges to generate interior points
-	for(int i=0;i<gridWidth-1;i++){ //iterate left to right
+	for(int i=0;i<gridWidth-1;i++){ //iterate left to right	
 		for(int j=0;j<gridDepth-1;j++){//iterate front to back
 			int sqNum=(j+i*gridDepth);
 			int vertexNum=sqNum*3*2; //6 vertices per square (2 tris)
@@ -81,19 +81,19 @@ void Terrain::Init(){
 
 			//Bottom Left
 			color = image.getPixel(j, i);
-			m_colorHeight[0] = m_HEIGHT * ((color.r / 255.0f));
+			m_colorHeight[0] = m_HEIGHT * ((color.r / 255.0f) * 10);
 
 			//Top Left
 			color = image.getPixel(j + 1, i);
-			m_colorHeight[1] = m_HEIGHT * ((color.r / 255.0f));
+			m_colorHeight[1] = m_HEIGHT * ((color.r / 255.0f) * 10);
 
 			// Bottom Right
 			color = image.getPixel(j, i + 1);
-			m_colorHeight[2] = m_HEIGHT * ((color.r / 255.0f));
+			m_colorHeight[2] = m_HEIGHT * ((color.r / 255.0f) * 10);
 
 			//Top Right
 			color = image.getPixel(j + 1, i + 1);
-			m_colorHeight[3] = m_HEIGHT * ((color.r / 255.0f));
+			m_colorHeight[3] = m_HEIGHT * ((color.r / 255.0f) * 10);
 
 			/*
 			back   +-----+	looking from above, the grid is made up of regular squares
@@ -109,32 +109,30 @@ void Terrain::Init(){
 
 
 
-			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
-			setPoint(vertices[vertexNum++], left, m_colorHeight[0], front);
+			setPoint(colors[vertexNum],0.f,0.f,0.f);			
+			setPoint(vertices[vertexNum++], left, m_colorHeight[0], front);			
 
-			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
+			setPoint(colors[vertexNum],0.f,1.f,0.f);
 			setPoint(vertices[vertexNum++], right, m_colorHeight[2], front);
 
-			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
+			setPoint(colors[vertexNum],0.f, 0.f, 1.f);
 			setPoint(vertices[vertexNum++], right, m_colorHeight[3], back);
 
-			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
+			setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
 			setPoint(vertices[vertexNum++], right, m_colorHeight[3], back);
 
-			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
+			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 			setPoint(vertices[vertexNum++], left, m_colorHeight[0], front);
 
-			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
+			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 			setPoint(vertices[vertexNum++], left, m_colorHeight[1], back);
 
 			//declare a degenerate triangle
 			//TODO: fix this to draw the correct triangle
+
+			
 		}
-	}
-
-
-
-
+	}	
 }
 
 
