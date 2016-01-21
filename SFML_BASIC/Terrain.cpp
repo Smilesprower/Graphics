@@ -12,12 +12,13 @@ Terrain::Terrain(void)
 	terrDepth=50;
 	vertices=NULL;
 	colors=NULL;	
+	texCoor = NULL;
 	
 	//num squares in grid will be width*height, two triangles per square
 	//3 verts per triangle
 	 numVerts=gridDepth*gridWidth*2*3;
 
-
+	 image.loadFromFile("../test.jpg");
 }
 
 
@@ -25,6 +26,7 @@ Terrain::~Terrain(void)
 {
 	delete [] vertices;
 	delete [] colors;
+	delete[] texCoor;
 }
 
 //interpolate between two values
@@ -50,8 +52,8 @@ float  Terrain::getHeight(float x, float y){
 	//center will be the highest point
 	dist=30-dist;
 	//put a nice curve in it
-	dist*=dist;
-	dist*=dist;
+	dist *= dist;
+	dist *= dist;
 	//whoah, way to high, make it smaller
 	dist/=50000;
 
@@ -64,7 +66,8 @@ void Terrain::Init(){
 	vertices=new vector[numVerts];
 	delete [] colors;
 	colors=new vector[numVerts];
-
+	delete[] texCoor;
+	texCoor = new vector[numVerts];
 
 	//interpolate along the edges to generate interior points
 	for(int i=0;i<gridWidth-1;i++){ //iterate left to right
@@ -75,7 +78,23 @@ void Terrain::Init(){
 			float back =lerp(-terrDepth/2,terrDepth/2,(float)(j+1)/gridDepth);
 			float left=lerp(-terrWidth/2,terrWidth/2,(float)i/gridDepth);
 			float right=lerp(-terrDepth/2,terrDepth/2,(float)(i+1)/gridDepth);
-			
+
+			//Bottom Left
+			color = image.getPixel(j, i);
+			m_colorHeight[0] = m_HEIGHT * ((color.r / 255.0f));
+
+			//Top Left
+			color = image.getPixel(j + 1, i);
+			m_colorHeight[1] = m_HEIGHT * ((color.r / 255.0f));
+
+			// Bottom Right
+			color = image.getPixel(j, i + 1);
+			m_colorHeight[2] = m_HEIGHT * ((color.r / 255.0f));
+
+			//Top Right
+			color = image.getPixel(j + 1, i + 1);
+			m_colorHeight[3] = m_HEIGHT * ((color.r / 255.0f));
+
 			/*
 			back   +-----+	looking from above, the grid is made up of regular squares
 			       |tri1/|	'left & 'right' are the x cooded of the edges of the square
@@ -89,18 +108,25 @@ void Terrain::Init(){
 			//tri1
 
 
+
 			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
-			setPoint(vertices[vertexNum++],left,getHeight(left,front),front);
+			setPoint(vertices[vertexNum++], left, m_colorHeight[0], front);
+
 			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
-			setPoint(vertices[vertexNum++],right,getHeight(right,front),front);
+			setPoint(vertices[vertexNum++], right, m_colorHeight[2], front);
+
 			setPoint(colors[vertexNum],(rand()%255)/255.0,(rand()%255)/255.0,(rand()%255)/255.0);
-			setPoint(vertices[vertexNum++],right,getHeight(right,back),back);
+			setPoint(vertices[vertexNum++], right, m_colorHeight[3], back);
+
 			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
-			setPoint(vertices[vertexNum++], right, getHeight(right, back), back);
+			setPoint(vertices[vertexNum++], right, m_colorHeight[3], back);
+
 			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
-			setPoint(vertices[vertexNum++], left, getHeight(left, front), front);
+			setPoint(vertices[vertexNum++], left, m_colorHeight[0], front);
+
 			setPoint(colors[vertexNum], (rand() % 255) / 255.0, (rand() % 255) / 255.0, (rand() % 255) / 255.0);
-			setPoint(vertices[vertexNum++], left, getHeight(left, back), back);
+			setPoint(vertices[vertexNum++], left, m_colorHeight[1], back);
+
 			//declare a degenerate triangle
 			//TODO: fix this to draw the correct triangle
 		}
@@ -113,11 +139,11 @@ void Terrain::Init(){
 
 
 void Terrain::Draw(){
-
 	glBegin(GL_TRIANGLES);
 	for(int i =0;i<numVerts;i++){
 			glColor3fv(colors[i]);
 			glVertex3fv(vertices[i]);
+			glTexCoord2fv(texCoor[i]);
 	}
 	glEnd();
 }

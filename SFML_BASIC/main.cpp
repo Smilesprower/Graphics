@@ -33,17 +33,11 @@
 int main() 
 { 
     // Create the main window 
-    
 	int width = 600;
 	int height = 600;
 
-	sf::ContextSettings Settings;
-	//Settings.depthBits = 24; // Request a 24 bits depth buffer
-	//Settings.stencilBits = 8;  // Request a 8 bits stencil buffer
-	//Settings.antialiasingLevel = 2;  // Request 2 levels of antialiasing
-
 	// create the window
-	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(32));
+	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));
     // Create a clock for measuring time elapsed     
     sf::Clock Clock; 
 
@@ -63,9 +57,6 @@ int main()
      
     //set up a 3D Perspective View volume
     gluPerspective(90.f, (float)width/height, 1.f, 300.0f);//fov, aspect, zNear, zFar 
- 
-
-
 
 	//load & bind the shader
 	sf::Shader shader;
@@ -93,14 +84,23 @@ int main()
             // Escape key : exit 
             if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape)) 
                 App.close(); 
-             
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::U))
+			{
+				glPolygonMode(GL_FRONT, GL_LINE);
+				glPolygonMode(GL_BACK, GL_LINE);
+			}
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::I))
+			{
+				glPolygonMode(GL_FRONT, GL_FILL);
+				glPolygonMode(GL_BACK, GL_FILL);
+			}
+			
 			//update the camera
 			camera.Update(Event);
- 
-            
-    
         } 
            
+	
+
         //Prepare for drawing 
         // Clear color and depth buffer 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
@@ -113,19 +113,15 @@ int main()
 		//get the viewing transform from the camera
 		camera.ViewingTransform();
 
-
 		//make the world spin
 		//TODO:probably should remove this in final
 		static float ang=0.0;
 		ang+=0.01f;
 		//glRotatef(ang*2,0,1,0);//spin about y-axis
 		
-
-		
 		//draw the world
 		terrain.Draw();
 
-		   
         // Finally, display rendered frame on screen 
         App.display(); 
     } 
