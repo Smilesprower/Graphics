@@ -44,6 +44,21 @@ int main()
 	aiVector3D position(0,10,-30);
 	Camera camera;
     camera.Init(position); //create a camera
+
+	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	glEnable(GL_LIGHTING);
+	glEnable(GL_LIGHT0);
+
+	GLfloat ambientLight[] = { 0.1, 0.1, 0.1, 1.0 };
+	GLfloat diffuseLight[] = { 0.9, 0.9, 0.9, 1.0 };
+	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+
+	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
+	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+
+	GLfloat lightPos[] = { 0.5, 0.5, 0.0, 1.0 };
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
       
     //prepare OpenGL surface for HSR 
     glClearDepth(1.f); 

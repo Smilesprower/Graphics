@@ -13,6 +13,7 @@ class Terrain
 	//array of vertices for the grid(this will be a triangle list)
 	//I know, very inefficient, but let's run before we walk
 	vector *texCoor;
+	vector *normals;
 	vector *vertices;
 	vector *colors;
 
@@ -24,6 +25,7 @@ class Terrain
 
 	float getHeight(int x, int y);
 	void setPoint(vector, float, float,float);
+	void calculateNormal(vector, vector, vector, vector);
 	
 public:
 	Terrain(void);

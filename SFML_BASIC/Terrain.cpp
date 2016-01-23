@@ -10,6 +10,7 @@ Terrain::Terrain(void)
 
 	terrWidth=50; //size of terrain in world units
 	terrDepth=50;
+	normals = NULL;
 	vertices=NULL;
 	colors=NULL;	
 	texCoor = NULL;
@@ -21,9 +22,9 @@ Terrain::Terrain(void)
 	 image.loadFromFile("../test.jpg");
 }
 
-
 Terrain::~Terrain(void)
 {
+	delete[] normals;
 	delete [] vertices;
 	delete [] colors;
 	delete[] texCoor;
@@ -34,12 +35,32 @@ float lerp(float start, float end, float t){
 	return start+(end-start)*t;
 }
 
-
 void Terrain::setPoint(vector v,float x, float y, float z){
 
 		v[0]=x;
 		v[1]=y;
 		v[2]=z;
+}
+
+void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, vector point3){
+
+	vector u, v, normal = {};
+
+	u[0] = point2[0] - point1[0];
+	u[1] = point2[1] - point1[1];
+	u[2] = point2[2] - point1[2];
+	
+	v[0] = point3[0] - point1[0];	
+	v[1] = point3[1] - point1[1];
+	v[2] = point3[2] - point1[2];
+
+	normal[0] = (u[1] * v[2]) - (u[2] * v[1]);
+	normal[1] = (u[2] * v[0]) - (u[0] * v[2]);
+	normal[2] = (u[0] * v[1]) - (u[1] * v[0]);
+
+	normalsVec[0] = -normal[0];
+	normalsVec[1] = -normal[1];
+	normalsVec[2] = -normal[2];
 }
 
 //helper function to calculate height of terrain at a given point in space
@@ -51,7 +72,8 @@ float  Terrain::getHeight(int x, int y){
 }
 
 void Terrain::Init(){
-
+	delete[] normals;
+	normals = new vector[numVerts];
 	delete[] vertices;//just in case we've called init before
 	vertices = new vector[numVerts];
 	delete[] colors;
@@ -65,13 +87,12 @@ void Terrain::Init(){
 			pixelArray[j][i] = ((color.r / 255.0f));
 		}
 
-
-
 		//interpolate along the edges to generate interior points
 		for (int i = 0; i < gridWidth - 1; i++){ //iterate left to right	
 			for (int j = 0; j < gridDepth - 1; j++){//iterate front to back
 				int sqNum = (j + i*gridDepth);
 				int vertexNum = sqNum * 3 * 2; //6 vertices per square (2 tris)
+				int firstVertexNum = vertexNum;
 				float front = lerp(-terrDepth / 2, terrDepth / 2, (float)j / gridDepth);
 				float back = lerp(-terrDepth / 2, terrDepth / 2, (float)(j + 1) / gridDepth);
 				float left = lerp(-terrWidth / 2, terrWidth / 2, (float)i / gridDepth);
@@ -86,7 +107,7 @@ void Terrain::Init(){
 				|/tri2|
 				front  +-----+
 				left   right
-				*/
+				*/			
 
 				//tri1
 				setPoint(colors[vertexNum], 0.f, 0.f, 0.f);
@@ -94,7 +115,7 @@ void Terrain::Init(){
 				setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 				setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
 				setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
-				setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
+				setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);	
 
 				//tri2
 				setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
@@ -103,15 +124,23 @@ void Terrain::Init(){
 				setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
 				setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 				setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);
+							
+				vector normalVec = {};
+				calculateNormal(normalVec, vertices[firstVertexNum], vertices[firstVertexNum + 1], vertices[firstVertexNum + 2]);
+
+				for (int k = 0; k < 6; k++)
+				{
+					setPoint(normals[firstVertexNum + k], normalVec[0], normalVec[1], normalVec[2]);
+				}
 			}
 		}
-	}
+	}	
 }
-
 
 void Terrain::Draw(){
 	glBegin(GL_TRIANGLES);
-	for(int i =0;i<numVerts;i++){
+	for(int i =0;i<numVerts;i++){		
+			glNormal3fv(normals[i]);
 			glColor3fv(colors[i]);
 			glVertex3fv(vertices[i]);
 			glTexCoord2fv(texCoor[i]);
