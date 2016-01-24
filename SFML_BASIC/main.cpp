@@ -35,6 +35,7 @@ int main()
     // Create the main window 
 	int width = 600;
 	int height = 600;
+	bool wireframe = true;
 
 	// create the window
 	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));
@@ -51,11 +52,11 @@ int main()
 
 	GLfloat ambientLight[] = { 0.4, 0.4, 0.4, 1.0 };
 	GLfloat diffuseLight[] = { 0.6, 0.6, 0.6, 1.0 };
-	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
+	//GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
 	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
+	//glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
 
 	GLfloat lightPos[] = { 0.5, 0.5, 0.0, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
@@ -101,15 +102,43 @@ int main()
             // Escape key : exit 
             if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::Escape)) 
                 App.close(); 
-			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::U))
+			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::O))
 			{
-				glPolygonMode(GL_FRONT, GL_LINE);
-				glPolygonMode(GL_BACK, GL_LINE);
+				// select the projection matrix and clear it out
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				
+				// set up an orthographic projection with the same near clip plane
+				glOrtho(-16.0, 16.0, -10.0, 16.0, 1.f, 300.0f);
+
+				// select modelview matrix and clear it out
+				glMatrixMode(GL_MODELVIEW);
+			}
+			else if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::P))
+			{	
+				// select the projection matrix and clear it out
+				glMatrixMode(GL_PROJECTION);
+				glLoadIdentity();
+				
+				gluPerspective(90.f, (float)width / height, 1.f, 300.0f);//fov, aspect, zNear, zFar 
+
+				// select modelview matrix and clear it out
+				glMatrixMode(GL_MODELVIEW);
 			}
 			if ((Event.type == sf::Event::KeyPressed) && (Event.key.code == sf::Keyboard::I))
 			{
-				glPolygonMode(GL_FRONT, GL_FILL);
-				glPolygonMode(GL_BACK, GL_FILL);
+				wireframe = !wireframe;
+
+				if (wireframe == true)
+				{
+					glPolygonMode(GL_FRONT, GL_FILL);
+					glPolygonMode(GL_BACK, GL_FILL);
+				}
+				else
+				{
+					glPolygonMode(GL_FRONT, GL_LINE);
+					glPolygonMode(GL_BACK, GL_LINE);
+				}				
 			}
 			
 			//update the camera
