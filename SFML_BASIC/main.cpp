@@ -49,8 +49,8 @@ int main()
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
-	GLfloat ambientLight[] = { 0.1, 0.1, 0.1, 1.0 };
-	GLfloat diffuseLight[] = { 0.9, 0.9, 0.9, 1.0 };
+	GLfloat ambientLight[] = { 0.4, 0.4, 0.4, 1.0 };
+	GLfloat diffuseLight[] = { 0.6, 0.6, 0.6, 1.0 };
 	GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -59,6 +59,8 @@ int main()
 
 	GLfloat lightPos[] = { 0.5, 0.5, 0.0, 1.0 };
 	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+
+	glShadeModel(GL_SMOOTH);
       
     //prepare OpenGL surface for HSR 
     glClearDepth(1.f); 
@@ -130,8 +132,8 @@ int main()
 
 		//make the world spin
 		//TODO:probably should remove this in final
-		static float ang=0.0;
-		ang+=0.01f;
+		//static float ang=0.0;
+		//ang+=0.01f;
 		//glRotatef(ang*2,0,1,0);//spin about y-axis
 		
 		//draw the world

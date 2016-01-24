@@ -46,6 +46,15 @@ void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, v
 
 	vector u, v, normal = {};
 
+	float sum = FLT_MIN;
+	sum += (point2[0] - point1[0]) * (point2[1] - point1[1]) * (point2[2] - point1[2]);
+	sum += (point3[0] - point2[0]) * (point3[1] - point2[1]) * (point3[2] - point2[2]);
+	sum += (point1[0] - point3[0]) * (point1[1] - point3[1]) * (point1[2] - point3[2]);
+
+	int direction = 1;
+	if (sum > 0)
+		direction = -1;
+
 	u[0] = point2[0] - point1[0];
 	u[1] = point2[1] - point1[1];
 	u[2] = point2[2] - point1[2];
@@ -58,9 +67,12 @@ void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, v
 	normal[1] = (u[2] * v[0]) - (u[0] * v[2]);
 	normal[2] = (u[0] * v[1]) - (u[1] * v[0]);
 
-	normalsVec[0] = -normal[0];
-	normalsVec[1] = -normal[1];
-	normalsVec[2] = -normal[2];
+	//normalise the vector by dividing by its length
+	double length = sqrt(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]);
+
+	normalsVec[0] = direction * (normal[0] / length);
+	normalsVec[1] = direction * (normal[1] / length);
+	normalsVec[2] = direction * (normal[2] / length);
 }
 
 //helper function to calculate height of terrain at a given point in space
@@ -110,7 +122,7 @@ void Terrain::Init(){
 				*/			
 
 				//tri1
-				setPoint(colors[vertexNum], 0.f, 0.f, 0.f);
+				setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
 				setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
 				setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 				setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
