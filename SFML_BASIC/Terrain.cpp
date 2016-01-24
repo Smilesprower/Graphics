@@ -2,6 +2,7 @@
 #include "SFML/OpenGL.hpp"
 #include "Terrain.h"
 #include <cmath>
+#include <iostream>
 
 Terrain::Terrain(void)
 {
@@ -13,7 +14,7 @@ Terrain::Terrain(void)
 	normals = NULL;
 	vertices=NULL;
 	colors=NULL;	
-	texCoor = NULL;
+	texCoords = NULL;
 	
 	//num squares in grid will be width*height, two triangles per square
 	//3 verts per triangle
@@ -27,7 +28,7 @@ Terrain::~Terrain(void)
 	delete[] normals;
 	delete [] vertices;
 	delete [] colors;
-	delete[] texCoor;
+	delete[] texCoords;
 }
 
 //interpolate between two values
@@ -40,6 +41,12 @@ void Terrain::setPoint(vector v,float x, float y, float z){
 		v[0]=x;
 		v[1]=y;
 		v[2]=z;
+}
+
+void Terrain::setTexCoords(vector v, float x, float y){
+
+	v[0] = x;
+	v[1] = y;	
 }
 
 void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, vector point3){
@@ -90,72 +97,73 @@ void Terrain::Init(){
 	vertices = new vector[numVerts];
 	delete[] colors;
 	colors = new vector[numVerts];
-	delete[] texCoor;
-	texCoor = new vector[numVerts];
+	delete[] texCoords;
+	texCoords = new vector[numVerts];
 
 	for (int i = 0; i < gridWidth; i++){ //iterate left to right
 		for (int j = 0; j < gridDepth; j++){//iterate front to back
 			color = image.getPixel(j, i);
-			pixelArray[j][i] = ((color.r / 255.0f));
-		}
-
-		//interpolate along the edges to generate interior points
-		for (int i = 0; i < gridWidth - 1; i++){ //iterate left to right	
-			for (int j = 0; j < gridDepth - 1; j++){//iterate front to back
-				int sqNum = (j + i*gridDepth);
-				int vertexNum = sqNum * 3 * 2; //6 vertices per square (2 tris)
-				int firstVertexNum = vertexNum;
-				float front = lerp(-terrDepth / 2, terrDepth / 2, (float)j / gridDepth);
-				float back = lerp(-terrDepth / 2, terrDepth / 2, (float)(j + 1) / gridDepth);
-				float left = lerp(-terrWidth / 2, terrWidth / 2, (float)i / gridDepth);
-				float right = lerp(-terrDepth / 2, terrDepth / 2, (float)(i + 1) / gridDepth);
-
-				/*
-				back   +-----+	looking from above, the grid is made up of regular squares
-				|tri1/|	'left & 'right' are the x cooded of the edges of the square
-				|   / |	'back' & 'front' are the y coords of the square
-				|  /  |	each square is made of two trianlges (1 & 2)
-				| /   |
-				|/tri2|
-				front  +-----+
-				left   right
-				*/			
-
-				//tri1
-				setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
-				setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
-				setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
-				setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
-				setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
-				setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);	
-
-				//tri2
-				setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
-				setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
-				setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
-				setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
-				setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
-				setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);
-							
-				vector normalVec = {};
-				calculateNormal(normalVec, vertices[firstVertexNum], vertices[firstVertexNum + 1], vertices[firstVertexNum + 2]);
-
-				for (int k = 0; k < 6; k++)
-				{
-					setPoint(normals[firstVertexNum + k], normalVec[0], normalVec[1], normalVec[2]);
-				}
-			}
-		}
+			pixelArray[j][i] = ((color.r / 255.0f));	
+			setTexCoords(texCoords[i + j], (float)i / (gridWidth - 1), (float)j / (gridDepth - 1));			
+		}	
 	}	
+
+	//interpolate along the edges to generate interior points
+	for (int i = 0; i < gridWidth - 1; i++){ //iterate left to right	
+		for (int j = 0; j < gridDepth - 1; j++){//iterate front to back
+			int sqNum = (j + i*gridDepth);
+			int vertexNum = sqNum * 3 * 2; //6 vertices per square (2 tris)
+			int firstVertexNum = vertexNum;
+			float front = lerp(-terrDepth / 2, terrDepth / 2, (float)j / gridDepth);
+			float back = lerp(-terrDepth / 2, terrDepth / 2, (float)(j + 1) / gridDepth);
+			float left = lerp(-terrWidth / 2, terrWidth / 2, (float)i / gridDepth);
+			float right = lerp(-terrDepth / 2, terrDepth / 2, (float)(i + 1) / gridDepth);
+
+			/*
+			back   +-----+	looking from above, the grid is made up of regular squares
+			|tri1/|	'left & 'right' are the x cooded of the edges of the square
+			|   / |	'back' & 'front' are the y coords of the square
+			|  /  |	each square is made of two trianlges (1 & 2)
+			| /   |
+			|/tri2|
+			front  +-----+
+			left   right
+			*/			
+
+			//tri1
+			setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
+			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
+			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
+			setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
+			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
+			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);	
+
+			//tri2
+			setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
+			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
+			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
+			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
+			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
+			setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);
+							
+			vector normalVec = {};
+			calculateNormal(normalVec, vertices[firstVertexNum], vertices[firstVertexNum + 1], vertices[firstVertexNum + 2]);
+
+			for (int k = 0; k < 6; k++)
+			{
+				setPoint(normals[firstVertexNum + k], normalVec[0], normalVec[1], normalVec[2]);				
+			}
+		}		
+	}		
 }
 
 void Terrain::Draw(){
 	glBegin(GL_TRIANGLES);
-	for(int i =0;i<numVerts;i++){		
-			glNormal3fv(normals[i]);
-			glColor3fv(colors[i]);
+	for(int i =0;i<numVerts;i++){	
+			glColor3d(1.0, 1.0, 1.0);
+			glNormal3fv(normals[i]);			
 			glVertex3fv(vertices[i]);
-			glTexCoord2fv(texCoor[i]);
+			glTexCoord2fv(texCoords[i]);
 	}
 	glEnd();
 }

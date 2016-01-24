@@ -12,7 +12,7 @@ class Terrain
 	typedef  GLfloat vector[3];
 	//array of vertices for the grid(this will be a triangle list)
 	//I know, very inefficient, but let's run before we walk
-	vector *texCoor;
+	vector *texCoords;
 	vector *normals;
 	vector *vertices;
 	vector *colors;
@@ -26,6 +26,7 @@ class Terrain
 	float getHeight(int x, int y);
 	void setPoint(vector, float, float,float);
 	void calculateNormal(vector, vector, vector, vector);
+	void setTexCoords(vector v, float x, float y);
 	
 public:
 	Terrain(void);

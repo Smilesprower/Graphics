@@ -37,8 +37,9 @@ public:
 	}
 
 	void Update(sf::Event e){//respond to keyboard events
+
 		if ((e.type == sf::Event::KeyPressed) && (e.key.code == sf::Keyboard::D)){
-			MoveLeftRight(+1);
+			MoveLeftRight(1);
 		}
 
 		if ((e.type == sf::Event::KeyPressed) && (e.key.code == sf::Keyboard::A)){

@@ -37,6 +37,10 @@ int main()
 	int height = 600;
 	bool wireframe = true;
 
+	sf::Texture sea; //texture object called car
+
+	sea.loadFromFile("../water.png");
+
 	// create the window
 	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));
     // Create a clock for measuring time elapsed     
@@ -51,7 +55,7 @@ int main()
 	glEnable(GL_LIGHT0);
 
 	GLfloat ambientLight[] = { 0.4, 0.4, 0.4, 1.0 };
-	GLfloat diffuseLight[] = { 0.6, 0.6, 0.6, 1.0 };
+	GLfloat diffuseLight[] = { 1.0, 1.0, 1.0, 1.0 };
 	//GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
 
 	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
@@ -150,6 +154,10 @@ int main()
         //Prepare for drawing 
         // Clear color and depth buffer 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
+
+		glEnable(GL_TEXTURE_2D);
+		sf::Texture::bind(&sea);
+
    
         // Apply some transformations 
         //initialise the worldview matrix
