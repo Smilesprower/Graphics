@@ -1,3 +1,5 @@
+#version 120
+
 uniform sampler2D sea;
 uniform sampler2D grass;
 uniform sampler2D rock;
@@ -5,19 +7,19 @@ uniform sampler2D rock;
 varying float height;
 
 void main()
-{
-	// Heights are between 0 - 18 I think ?
-	// Because we got the vertex height and not the pixel height; 
+{	
+	vec4 waterTex = texture2D(sea, gl_TexCoord[0].st);
+    vec4 grassTex = texture2D(grass, gl_TexCoord[0].st);
+	vec4 rockTex = texture2D(rock, gl_TexCoord[0].st);    
 
-   // vec4 color = texture2D(rock,gl_TexCoord[0].st);
-   // gl_FragColor = color;
-
-	if(height >= 0 && height <= 2)
-		gl_FragColor = texture2D(sea, gl_TexCoord[0].st );  
-	else if(height > 2 && height <= 8)
-		gl_FragColor = texture2D(grass, gl_TexCoord[0].st );  
-
-	else 
-		gl_FragColor = texture2D(rock, gl_TexCoord[0].st );  
-
+	if(height >= 0.75)
+		gl_FragColor = rockTex;
+	else if (height >= 0.6)
+		gl_FragColor = mix(rockTex, grassTex, grassTex.a);
+	else if (height >= 1)
+		gl_FragColor = grassTex;
+	else if (height >= 0.05)
+		gl_FragColor = mix(waterTex, grassTex, grassTex.a);
+	else
+		gl_FragColor = waterTex;
 }

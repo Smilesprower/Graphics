@@ -86,7 +86,7 @@ void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, v
 //you will need to modify this significantly to pull height from a map
 float  Terrain::getHeight(int x, int y){
 	//for the sample we will calculate height based on distance form origin
-	float dist = pixelArray[y][x] *m_HEIGHT * m_HEIGHT;
+	float dist = pixelArray[y][x] * m_HEIGHT * m_HEIGHT;
 	return dist;
 }
 
@@ -103,9 +103,9 @@ void Terrain::Init(){
 	for (int i = 0; i < gridWidth; i++){ //iterate left to right
 		for (int j = 0; j < gridDepth; j++){//iterate front to back
 			color = image.getPixel(j, i);
-			pixelArray[j][i] = ((color.r / 255.0f));
+			pixelArray[j][i] = ((color.r / 255.0f));			
 		}	
-	}	
+	}
 
 	//interpolate along the edges to generate interior points
 	for (int i = 0; i < gridWidth - 1; i++){ //iterate left to right	

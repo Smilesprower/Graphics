@@ -1,9 +1,11 @@
+#version 120
+
 varying  float height;
 
 void main()
 {
 	// Get the height
-	height = gl_Vertex.y;
+	height = gl_Vertex.y / 64;
 
 	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
 	gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1;
