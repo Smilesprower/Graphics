@@ -38,8 +38,18 @@ int main()
 	bool wireframe = true;
 
 	sf::Texture sea; //texture object called car
+	sf::Texture grass; //texture object called car
+	sf::Texture rock; //texture object called car
+
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	sea.loadFromFile("../water.png");
+	grass.loadFromFile("../grass.png");
+	rock.loadFromFile("../snowyrock.png");
+
+
 
 	// create the window
 	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));
@@ -50,7 +60,7 @@ int main()
 	Camera camera;
     camera.Init(position); //create a camera
 
-	glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	/*glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
 
@@ -63,9 +73,9 @@ int main()
 	//glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
 
 	GLfloat lightPos[] = { 0.5, 0.5, 0.0, 1.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);
+	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);*/
 
-	glShadeModel(GL_SMOOTH);
+	//glShadeModel(GL_SMOOTH);
       
     //prepare OpenGL surface for HSR 
     glClearDepth(1.f); 
@@ -86,7 +96,10 @@ int main()
 	if(!shader.loadFromFile("vertex.glsl","fragment.glsl")){
         exit(1);
     }
-	sf::Shader::bind(&shader);
+
+	shader.setParameter("sea", sea);	
+	shader.setParameter("grass", grass);
+	shader.setParameter("rock", rock);
 
 	//Create our Terrain
 	Terrain terrain;
@@ -143,22 +156,18 @@ int main()
 					glPolygonMode(GL_FRONT, GL_LINE);
 					glPolygonMode(GL_BACK, GL_LINE);
 				}				
-			}
-			
+			}			
+
 			//update the camera
 			camera.Update(Event);
-        } 
-           
-	
+        } 	
 
         //Prepare for drawing 
         // Clear color and depth buffer 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 
-		glEnable(GL_TEXTURE_2D);
-		sf::Texture::bind(&sea);
+		sf::Shader::bind(&shader);
 
-   
         // Apply some transformations 
         //initialise the worldview matrix
 		glMatrixMode(GL_MODELVIEW); 
