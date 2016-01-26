@@ -8,9 +8,9 @@ varying float height;
 
 void main()
 {	
-	vec4 waterTex = texture2D(sea, gl_TexCoord[0].st);
-    vec4 grassTex = texture2D(grass, gl_TexCoord[0].st);
-	vec4 rockTex = texture2D(rock, gl_TexCoord[0].st);    
+	vec4 waterTex = texture2D(sea, fract(gl_TexCoord[0].st));
+    vec4 grassTex = texture2D(grass, fract(gl_TexCoord[0].st));
+	vec4 rockTex = texture2D(rock, fract(gl_TexCoord[0].st));    
 
 	if(height >= 0.75)
 		gl_FragColor = rockTex;
@@ -22,4 +22,5 @@ void main()
 		gl_FragColor = mix(grassTex, waterTex, (0.1 - height) / 0.09);
 	else
 		gl_FragColor = waterTex;
+
 }

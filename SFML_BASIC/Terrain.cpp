@@ -131,24 +131,24 @@ void Terrain::Init(){
 			
 			//tri1
 			setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
-			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth - 2), (float)j / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
 			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
-			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth - 2), (float)j / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
-			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth - 2), (float)(j + 1) / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);	
 
 			//tri2
 			setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
-			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth - 2), (float)(j + 1) / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
 			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
-			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth - 2), (float)j / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
-			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth - 2), (float)(j + 1) / (gridDepth - 2));
+			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);	
 							
 			vector normalVec = {};

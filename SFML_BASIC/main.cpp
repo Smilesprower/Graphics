@@ -103,6 +103,7 @@ int main()
 	shader.setParameter("grass", grass);
 	shader.setParameter("rock", rock);
 
+
 	//Create our Terrain
 	Terrain terrain;
 	terrain.Init();
@@ -167,7 +168,6 @@ int main()
         //Prepare for drawing 
         // Clear color and depth buffer 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
-
 		sf::Shader::bind(&shader);
 
         // Apply some transformations 

@@ -5,7 +5,7 @@ varying  float height;
 void main()
 {
 	// Get the height
-	height = gl_Vertex.y / 64;
+	height = gl_Vertex.y;
 
 	vec3 normal, lightDir;
 	vec4 diffuse;
