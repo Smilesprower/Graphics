@@ -86,7 +86,7 @@ void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, v
 //you will need to modify this significantly to pull height from a map
 float  Terrain::getHeight(int x, int y){
 	//for the sample we will calculate height based on distance form origin
-	float dist = pixelArray[y][x] * m_HEIGHT * m_HEIGHT;
+	float dist = pixelArray[y][x] * m_heightMultiplier;
 	return dist;
 }
 
@@ -128,7 +128,7 @@ void Terrain::Init(){
 			front  +-----+
 			left   right
 			*/			
-
+			
 			//tri1
 			setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth - 2), (float)j / (gridDepth - 2));

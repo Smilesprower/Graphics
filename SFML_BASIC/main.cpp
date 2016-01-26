@@ -41,16 +41,17 @@ int main()
 	sf::Texture grass; //texture object called car
 	sf::Texture rock; //texture object called car
 
+	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_S, GL_REPEAT);
+	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_WRAP_T, GL_REPEAT);
 
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	sea.loadFromFile("../water.png");
 	grass.loadFromFile("../grass.png");
 	rock.loadFromFile("../snowyrock.png");
-
-
 
 	// create the window
 	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));

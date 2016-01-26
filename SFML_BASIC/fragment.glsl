@@ -15,11 +15,11 @@ void main()
 	if(height >= 0.75)
 		gl_FragColor = rockTex;
 	else if (height >= 0.6)
-		gl_FragColor = mix(rockTex, grassTex, grassTex.a);
-	else if (height >= 1)
+		gl_FragColor = mix(rockTex, grassTex, (0.75 - height) / 0.25);
+	else if (height >= 0.1)
 		gl_FragColor = grassTex;
-	else if (height >= 0.05)
-		gl_FragColor = mix(waterTex, grassTex, grassTex.a);
+	else if (height >= 0.01)
+		gl_FragColor = mix(grassTex, waterTex, (0.1 - height) / 0.09);
 	else
 		gl_FragColor = waterTex;
 }
