@@ -38,8 +38,10 @@ int main()
 	bool wireframe = true;
 
 	sf::Texture sea; //texture object called car
+	sf::Texture sand; //texture object called car
 	sf::Texture grass; //texture object called car
 	sf::Texture rock; //texture object called car
+	sf::Texture snowrock; //texture object called car
 
 	
 	glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MAG_FILTER, GL_LINEAR);
@@ -50,8 +52,10 @@ int main()
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	sea.loadFromFile("../water.png");
+	sand.loadFromFile("../sand.png");
 	grass.loadFromFile("../grass.png");
-	rock.loadFromFile("../snowyrock.png");
+	rock.loadFromFile("../rock.png");
+	snowrock.loadFromFile("../snowyrock.png");
 
 	// create the window
 	sf::RenderWindow App(sf::VideoMode(width, height), "OpenGL", sf::Style::Default, sf::ContextSettings(24));
@@ -99,9 +103,11 @@ int main()
         exit(1);
     }
 
-	shader.setParameter("sea", sea);	
+	shader.setParameter("sea", sea);
+	shader.setParameter("sand", sand);
 	shader.setParameter("grass", grass);
 	shader.setParameter("rock", rock);
+	shader.setParameter("snowrock", snowrock);
 
 
 	//Create our Terrain
@@ -140,7 +146,7 @@ int main()
 				glMatrixMode(GL_PROJECTION);
 				glLoadIdentity();
 				
-				gluPerspective(90.f, (float)width / height, 1.f, 300.0f);//fov, aspect, zNear, zFar 
+				glFrustum(-5.0, 5.0, -5.0, 5.0, 5, 100);
 
 				// select modelview matrix and clear it out
 				glMatrixMode(GL_MODELVIEW);

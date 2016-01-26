@@ -20,7 +20,7 @@ class Terrain
 	sf::Image image;
 	sf::Color color;
 
-	const float m_heightMultiplier = 52;
+	const float m_heightMultiplier = 40;
 	float pixelArray[100][100];
 
 	float getHeight(int x, int y);
