@@ -52,8 +52,8 @@ int main()
 	glBlendFunc(GL_ONE, GL_ONE_MINUS_SRC_ALPHA);
 
 	sea.loadFromFile("../water.png");
-	sand.loadFromFile("../sand.jpg");
-	grass.loadFromFile("../grass.jpg");
+	sand.loadFromFile("../sand.png");
+	grass.loadFromFile("../grass.png");
 	rock.loadFromFile("../rock.png");
 	snowrock.loadFromFile("../snowyrock.png");
 
