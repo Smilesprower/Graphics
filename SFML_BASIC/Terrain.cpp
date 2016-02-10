@@ -90,7 +90,54 @@ float  Terrain::getHeight(int x, int y){
 	return dist;
 }
 
-void Terrain::Init(){
+void Terrain::NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[])
+{
+	GLfloat v1[3], v2[3]; // two vectors
+
+	//calculate two vectors lying on the surface
+	// v1=p2-p1
+	// v2=p3-p2
+
+	for (int i = 0; i < 3; i++){
+		v1[i] = p2[i] - p1[i];
+		v2[i] = p3[i] - p2[i];
+	}
+
+	// calculate cross product of two vectors ( n= v1 x v2)
+	n[0] = v1[1] * v2[2] - v2[1] * v1[2];
+	n[1] = v1[2] * v2[0] - v2[2] * v1[0];
+	n[2] = v1[0] * v2[1] - v2[0] * v1[1];
+}
+
+void Terrain::Draw()
+{
+
+	glBegin(GL_TRIANGLES);
+	int counter = 0;
+	bool once = true;
+	for (int i = 0; i < numVerts; i++){
+		if (i == currentTris){
+			NormalVector(vertices[i], vertices[i + 2], vertices[i + 1], normal);
+			currentTris += 3;
+			glNormal3fv(normal);
+			counter++;
+
+		}
+
+		glColor3fv(colors[i]);
+		glTexCoord2fv(texCoords[i]);
+
+		glVertex3fv(vertices[i]);
+
+	}
+	currentTris = 0;
+	int i = counter;
+	glEnd();
+
+}
+
+void Terrain::Init()
+{
 	delete[] normals;
 	normals = new vector[numVerts];
 	delete[] vertices;//just in case we've called init before
@@ -100,16 +147,20 @@ void Terrain::Init(){
 	delete[] texCoords;
 	texCoords = new vector[numVerts];
 
-	for (int i = 0; i < gridWidth; i++){ //iterate left to right
-		for (int j = 0; j < gridDepth; j++){//iterate front to back
+	for (int i = 0; i < gridWidth; i++)
+	{ //iterate left to right
+		for (int j = 0; j < gridDepth; j++)
+		{//iterate front to back
 			color = image.getPixel(j, i);
-			pixelArray[j][i] = ((color.r / 255.0f));			
-		}	
+			pixelArray[j][i] = ((color.r / 255.0f));
+		}
 	}
 
 	//interpolate along the edges to generate interior points
-	for (int i = 0; i < gridWidth - 1; i++){ //iterate left to right	
-		for (int j = 0; j < gridDepth - 1; j++){//iterate front to back
+	for (int i = 0; i < gridWidth - 1; i++)
+	{ //iterate left to right	
+		for (int j = 0; j < gridDepth - 1; j++)
+		{//iterate front to back
 			int sqNum = (j + i*gridDepth);
 			int vertexNum = sqNum * 3 * 2; //6 vertices per square (2 tris)
 			int firstVertexNum = vertexNum;
@@ -127,48 +178,41 @@ void Terrain::Init(){
 			|/tri2|
 			front  +-----+
 			left   right
-			*/			
-			
+			*/
+
+
 			//tri1
 			setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
+			//setPoint(vertices[vertexNum++], left, getHeight(left, front), front);
+
+
 			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
+			//setPoint(vertices[vertexNum++], right, getHeight(right, front), front);//bottom right
+
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
-			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);	
+			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
+			//setPoint(vertices[vertexNum++], right, getHeight(right, back), back); //top right
 
 			//tri2
 			setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
-			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
-			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth /4 - 2));
-			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
+			//setPoint(vertices[vertexNum++], right, getHeight(right, back), back);
+
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
-			setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);	
-							
-			vector normalVec = {};
-			calculateNormal(normalVec, vertices[firstVertexNum], vertices[firstVertexNum + 1], vertices[firstVertexNum + 2]);
+			setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);
+			//setPoint(vertices[vertexNum++], left, getHeight(left, back), back); //top left
 
-			for (int k = 0; k < 6; k++)
-			{
-				setPoint(normals[firstVertexNum + k], normalVec[0], normalVec[1], normalVec[2]);				
-			}
-		}		
-	}	
-}
-
-void Terrain::Draw(){
-	glBegin(GL_TRIANGLES);
-	for(int i =0;i<numVerts;i++){	
-			glColor3d(1.0, 1.0, 1.0);
-			glNormal3fv(normals[i]);	
-			glTexCoord2fv(texCoords[i]);
-			glVertex3fv(vertices[i]);			
+			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
+			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
+			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
+			//setPoint(vertices[vertexNum++], left, getHeight(left, front), front); //bottom left 
+		}
 	}
-	glEnd();
 }

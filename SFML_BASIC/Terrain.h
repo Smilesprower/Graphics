@@ -26,7 +26,11 @@ class Terrain
 	float getHeight(int x, int y);
 	void setPoint(vector, float, float,float);
 	void calculateNormal(vector, vector, vector, vector);
+	void NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[]);
 	void setTexCoords(vector v, float x, float y);
+	GLfloat normal[3];
+	int currentTris;
+	float tallestPoint;
 	
 public:
 	Terrain(void);

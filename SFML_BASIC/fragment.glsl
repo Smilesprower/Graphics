@@ -42,4 +42,8 @@ void main()
 		gl_FragColor = mix(sandTex, waterTex, (0.008 - height) / 0.007);
 	else
 		gl_FragColor = waterTex;
+
+
+
+	gl_FragColor *= gl_Color;
 }

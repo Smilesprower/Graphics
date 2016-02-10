@@ -66,34 +66,33 @@ int main()
 	Camera camera;
     camera.Init(position); //create a camera
 
-	/*glLightModeli(GL_LIGHT_MODEL_LOCAL_VIEWER, GL_TRUE);
+	//prepare OpenGL surface for HSR 
+	glClearDepth(1.f);
+	glClearColor(0.3f, 0.3f, 0.6f, 0.f); //background colour
+	glEnable(GL_DEPTH_TEST);
+	glDepthMask(GL_TRUE);
+
+	//// Setup a perspective projection & Camera position 
+	glMatrixMode(GL_PROJECTION);
+	glLoadIdentity();
+
 	glEnable(GL_LIGHTING);
 	glEnable(GL_LIGHT0);
-
-	GLfloat ambientLight[] = { 0.4, 0.4, 0.4, 1.0 };
-	GLfloat diffuseLight[] = { 1.0, 1.0, 1.0, 1.0 };
-	//GLfloat specularLight[] = { 1.0, 1.0, 1.0, 1.0 };
-
-	glLightfv(GL_LIGHT0, GL_AMBIENT, ambientLight);
-	glLightfv(GL_LIGHT0, GL_DIFFUSE, diffuseLight);
-	//glLightfv(GL_LIGHT0, GL_SPECULAR, specularLight);
-
-	GLfloat lightPos[] = { 0.5, 0.5, 0.0, 1.0 };
-	glLightfv(GL_LIGHT0, GL_POSITION, lightPos);*/
-
-	//glShadeModel(GL_SMOOTH);
-      
-    //prepare OpenGL surface for HSR 
-    glClearDepth(1.f); 
-    glClearColor(0.3f, 0.3f, 0.6f, 0.f); //background colour
-    glEnable(GL_DEPTH_TEST); 
-    glDepthMask(GL_TRUE); 
+	GLfloat light_color[] = { 1.0, 1.0, 1.0, 1.0 };
+	GLfloat light_position[] = { 5.0, 2.6, 0.0, 0.0 };
+	glLightfv(GL_LIGHT0, GL_DIFFUSE, light_color); // set color of diffuse component
+	glLightfv(GL_LIGHT0, GL_SPECULAR, light_color); // set color of specular component
+	glLightfv(GL_LIGHT0, GL_POSITION, light_position);   // set position
+	///////////////////////////setting material
+	GLfloat materialAmbDiff[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // create an array of RGBA values
+	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, materialAmbDiff); // set the diffuse & ambient reflection colour for the front of faces
+	GLfloat materialSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // create an array of RGBA values (White)
+	GLfloat materialShininess[] = { 128.0f }; // select value between 0-128, 128=shiniest
+	glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular); // set the colour of specular reflection
+	glMaterialfv(GL_FRONT, GL_SHININESS, materialShininess); // set shininess of the material
    
-    //// Setup a perspective projection & Camera position 
-    glMatrixMode(GL_PROJECTION); 
-    glLoadIdentity(); 
-     
-    //set up a 3D Perspective View volume
+	
+	//set up a 3D Perspective View volume
     gluPerspective(90.f, (float)width/height, 1.f, 300.0f);//fov, aspect, zNear, zFar 
 
 	//load & bind the shader
