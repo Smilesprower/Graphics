@@ -92,6 +92,9 @@ float  Terrain::getHeight(int x, int y){
 
 void Terrain::NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[])
 {
+
+
+
 	GLfloat v1[3], v2[3]; // two vectors
 
 	//calculate two vectors lying on the surface
@@ -107,6 +110,9 @@ void Terrain::NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[]
 	n[0] = v1[1] * v2[2] - v2[1] * v1[2];
 	n[1] = v1[2] * v2[0] - v2[2] * v1[0];
 	n[2] = v1[0] * v2[1] - v2[0] * v1[1];
+
+
+
 }
 
 void Terrain::Draw()
@@ -123,11 +129,11 @@ void Terrain::Draw()
 			counter++;
 
 		}
-
 		glColor3fv(colors[i]);
 		glTexCoord2fv(texCoords[i]);
 
 		glVertex3fv(vertices[i]);
+
 
 	}
 	currentTris = 0;

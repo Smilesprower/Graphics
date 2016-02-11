@@ -84,8 +84,8 @@ int main()
 	glLightfv(GL_LIGHT0, GL_SPECULAR, light_color); // set color of specular component
 	glLightfv(GL_LIGHT0, GL_POSITION, light_position);   // set position
 	///////////////////////////setting material
-	GLfloat materialAmbDiff[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // create an array of RGBA values
-	glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, materialAmbDiff); // set the diffuse & ambient reflection colour for the front of faces
+	//GLfloat materialAmbDiff[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // create an array of RGBA values
+	//glMaterialfv(GL_FRONT, GL_AMBIENT_AND_DIFFUSE, materialAmbDiff); // set the diffuse & ambient reflection colour for the front of faces
 	GLfloat materialSpecular[] = { 1.0f, 1.0f, 1.0f, 1.0f }; // create an array of RGBA values (White)
 	GLfloat materialShininess[] = { 128.0f }; // select value between 0-128, 128=shiniest
 	glMaterialfv(GL_FRONT, GL_SPECULAR, materialSpecular); // set the colour of specular reflection
@@ -174,7 +174,9 @@ int main()
         // Clear color and depth buffer 
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 		sf::Shader::bind(&shader);
+		GLfloat light_position[] = { 5.0, 2, 0.5, 0.1 };
 
+		glLightfv(GL_LIGHT0, GL_POSITION, light_position);   // set position
         // Apply some transformations 
         //initialise the worldview matrix
 		glMatrixMode(GL_MODELVIEW); 

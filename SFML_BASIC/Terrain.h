@@ -3,6 +3,7 @@
 #include "SFML/Graphics.hpp" 
 class Terrain
 {
+public:
 	//size of the mesh forming the terrain
 	int gridWidth,gridDepth;
 	int numVerts;
@@ -31,8 +32,7 @@ class Terrain
 	GLfloat normal[3];
 	int currentTris;
 	float tallestPoint;
-	
-public:
+
 	Terrain(void);
 	~Terrain(void);
 

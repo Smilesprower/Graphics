@@ -1,14 +1,14 @@
 #version 120
 
 varying  float height;
-
+out vec4 specular;
 void main()
 {
 	// Get the height
 	height = gl_Vertex.y / 20;
 
 	vec3 normal, lightDir, viewVector, halfVector;
-	vec4 diffuse, ambient, globalAmbient, specular = vec4(0.0);
+	vec4 diffuse, ambient, globalAmbient;
 	float NdotL,NdotHV;
 	
 	/* first transform the normal into eye space and normalize the result */
@@ -39,7 +39,7 @@ void main()
 		specular = gl_FrontMaterial.specular * gl_LightSource[0].specular * pow(NdotHV,gl_FrontMaterial.shininess);
 	}
 	
-	gl_FrontColor = globalAmbient + NdotL * diffuse + ambient + specular;
+	gl_FrontColor = globalAmbient + NdotL * diffuse + ambient;
 	gl_Position = ftransform();
 
 	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
