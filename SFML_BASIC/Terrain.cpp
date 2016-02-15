@@ -93,8 +93,6 @@ float  Terrain::getHeight(int x, int y){
 void Terrain::NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[])
 {
 
-
-
 	GLfloat v1[3], v2[3]; // two vectors
 
 	//calculate two vectors lying on the surface

@@ -7,7 +7,7 @@ uniform sampler2D rock;
 uniform sampler2D snowrock;
 
 varying float height;
-in vec4 specular;
+
 void main()
 {	
 	vec4 waterTex = texture2D(sea, fract(gl_TexCoord[0].st));
@@ -41,7 +41,7 @@ void main()
 	else if (height >= 0.001)
 		gl_FragColor = mix(sandTex, waterTex, (0.008 - height) / 0.007);
 	else
-		gl_FragColor = waterTex + specular;
+		gl_FragColor = waterTex;
 
 
 

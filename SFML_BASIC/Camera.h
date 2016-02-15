@@ -26,7 +26,9 @@ public:
 	float angleXZ = 0;
 	float angleYZ = 0;
 
-	Camera() :forwardSpeed(0.5f), roationSpeed(0.05f){}
+	double PI = 3.14159;
+
+	Camera() :forwardSpeed(0.5f), roationSpeed(2.0f){}
 
 	void Init(aiVector3D& p = zero, aiVector3D& f = zaxis, aiVector3D& u = yaxis){
 		position = p;
@@ -90,15 +92,15 @@ public:
 	}
 
 	void TurnRightLeft(int dir){ //Dir=+1=>Right, dir=-1=> Left
-		angleXZ -= roationSpeed*dir;
+		angleXZ -= roationSpeed * dir * (PI / 180);
 		forward.x = sin(angleXZ);
 		forward.z = cos(angleXZ);
 	}
 
 	void TurnUpDown(int dir){ //Dir=+1=>Up, dir=-1=> Down
-		angleYZ += roationSpeed*dir;
-		forward.y = sin(angleYZ);
-		forward.z = cos(angleYZ);
+		angleYZ += roationSpeed * dir * (PI / 180);
+		forward.y = tan(angleYZ);
+
 	}
 
 	void ViewingTransform(){
