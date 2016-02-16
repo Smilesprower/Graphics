@@ -4,10 +4,10 @@ uniform sampler2D sea;
 uniform sampler2D sand;
 uniform sampler2D grass;
 uniform sampler2D rock;
-uniform sampler2D snowrock;
+uniform sampler2D snowrock; 
 
 varying float height;
-
+varying vec4 Ispec;
 void main()
 {	
 	vec4 waterTex = texture2D(sea, fract(gl_TexCoord[0].st));
@@ -28,22 +28,14 @@ void main()
 		gl_FragColor = grassTex;
 	else if (height >= 0.03)
 		gl_FragColor = mix(grassTex,sandTex, (0.05 - height) / 0.02);
-	
-	
-	// How Blending works Craig - I think
-	//////////////////////////////////
-	// Mix (1st text = highest text, 2nd text = lowest tex, 
-	//(start height of the texture above - current height ) divided by the difference between both)
-
 	else if (height >= 0.008)
 		gl_FragColor = sandTex;
 
 	else if (height >= 0.001)
 		gl_FragColor = mix(sandTex, waterTex, (0.008 - height) / 0.007);
 	else
-		gl_FragColor = waterTex;
+		gl_FragColor = waterTex +Ispec;
 
-
-
-	gl_FragColor *= gl_Color;
+   // write Total Color:  
+   gl_FragColor *= gl_Color;   
 }

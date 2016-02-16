@@ -1,49 +1,42 @@
-#version 120
-
-varying  float height;
-
-void main()
+varying vec3 N;
+varying vec3 v;
+varying float height;
+varying vec4 Ispec;
+void main(void)
 {
-	// Get the height
-	height = gl_Vertex.y / 20;
+   height = gl_Vertex.y / 20;
 
-	vec3 normal, lightDir, viewVector, halfVector;
-	vec4 diffuse, ambient, globalAmbient, specular = vec4(0.0);
+
+   	vec3 normal, lightDir;
+	vec4 diffuse, ambient, globalAmbient;
 	float NdotL,NdotHV;
-	
-	/* first transform the normal into eye space and normalize the result */
+
 	normal = normalize(gl_NormalMatrix * gl_Normal);
-	
-	/* now normalize the light's direction. Note that according to the
-	OpenGL specification, the light is stored in eye space. Also since 
-	we're talking about a directional light, the position field is actually 
-	direction */
 	lightDir = normalize(vec3(gl_LightSource[0].position));
-	
-	/* compute the cos of the angle between the normal and lights direction. 
-	The light is directional so the direction is constant for every vertex.
-	Since these two are normalized the cosine is the dot product. We also 
-	need to clamp the result to the [0,1] range. */
-	
 	NdotL = max(dot(normal, lightDir), 0.0);
-	
-	/* Compute the diffuse, ambient and globalAmbient terms */
 	diffuse = gl_FrontMaterial.diffuse * gl_LightSource[0].diffuse;
 	ambient = gl_FrontMaterial.ambient * gl_LightSource[0].ambient;
 	globalAmbient = gl_LightModel.ambient * gl_FrontMaterial.ambient;
-	
-	/* compute the specular term if NdotL is  larger than zero */
-	if (NdotL > 0.0) {
 
-		NdotHV = max(dot(normal, normalize(gl_LightSource[0].halfVector.xyz)),0.0);
-		specular = gl_FrontMaterial.specular * gl_LightSource[0].specular * pow(NdotHV,gl_FrontMaterial.shininess);
-	}
-	
-	gl_FrontColor = globalAmbient + NdotL * diffuse + ambient + specular;
-	gl_Position = ftransform();
+
+   v = vec3(gl_ModelViewMatrix * gl_Vertex);       
+   N = normalize(gl_NormalMatrix * gl_Normal);
+
+   vec3 L = normalize(gl_LightSource[0].position.xyz - v);   
+   vec3 E = normalize(-v); // we are in Eye Coordinates, so EyePos is (0,0,0)  
+   vec3 R = normalize(-reflect(L,N));  
+ 
+
+	// calculate Specular Term:
+	Ispec = gl_FrontLightProduct[0].specular * pow(max(dot(R,E),0.0),0.3*gl_FrontMaterial.shininess);
 
 	gl_TexCoord[0] = gl_TextureMatrix[0] * gl_MultiTexCoord0;
 	gl_TexCoord[1] = gl_TextureMatrix[1] * gl_MultiTexCoord1;
 	gl_TexCoord[2] = gl_TextureMatrix[2] * gl_MultiTexCoord2;
+
+
+   gl_FrontColor =  NdotL * diffuse + globalAmbient + ambient;
+   gl_Position = gl_ModelViewProjectionMatrix * gl_Vertex;
+
 
 }
