@@ -49,7 +49,8 @@ void Terrain::setTexCoords(vector v, float x, float y){
 	v[1] = y;	
 }
 
-void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, vector point3){
+void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, vector point3)
+{
 
 	vector u, v, normal = {};
 
@@ -74,12 +75,6 @@ void Terrain::calculateNormal(vector normalsVec, vector point1, vector point2, v
 	normal[1] = (u[2] * v[0]) - (u[0] * v[2]);
 	normal[2] = (u[0] * v[1]) - (u[1] * v[0]);
 
-	//normalise the vector by dividing by its length
-	double length = sqrt(normal[0] * normal[0] + normal[1] * normal[1] + normal[2] * normal[2]);
-
-	normalsVec[0] = direction * (normal[0] / length);
-	normalsVec[1] = direction * (normal[1] / length);
-	normalsVec[2] = direction * (normal[2] / length);
 }
 
 //helper function to calculate height of terrain at a given point in space
@@ -109,8 +104,6 @@ void Terrain::NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[]
 	n[1] = v1[2] * v2[0] - v2[2] * v1[0];
 	n[2] = v1[0] * v2[1] - v2[0] * v1[1];
 
-
-
 }
 
 void Terrain::Draw()
@@ -118,23 +111,18 @@ void Terrain::Draw()
 
 	glBegin(GL_TRIANGLES);
 	int counter = 0;
-	bool once = true;
 	for (int i = 0; i < numVerts; i++){
-		if (i == currentTris){
+		if (i == vertexTri){
 			NormalVector(vertices[i], vertices[i + 2], vertices[i + 1], normal);
-			currentTris += 3;
+			vertexTri += 3;
 			glNormal3fv(normal);
 			counter++;
-
 		}
 		glColor3fv(colors[i]);
 		glTexCoord2fv(texCoords[i]);
-
 		glVertex3fv(vertices[i]);
-
-
 	}
-	currentTris = 0;
+	vertexTri = 0;
 	int i = counter;
 	glEnd();
 
@@ -189,34 +177,27 @@ void Terrain::Init()
 			setPoint(colors[vertexNum], 1.f, 1.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
-			//setPoint(vertices[vertexNum++], left, getHeight(left, front), front);
-
 
 			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j, i + 1), front);
-			//setPoint(vertices[vertexNum++], right, getHeight(right, front), front);//bottom right
 
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
-			//setPoint(vertices[vertexNum++], right, getHeight(right, back), back); //top right
 
 			//tri2
 			setPoint(colors[vertexNum], 1.f, 0.f, 0.f);
 			setTexCoords(texCoords[vertexNum], (float)(i + 1) / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], right, getHeight(j + 1, i + 1), back);
-			//setPoint(vertices[vertexNum++], right, getHeight(right, back), back);
 
 			setPoint(colors[vertexNum], 0.f, 0.f, 1.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)(j + 1) / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j + 1, i), back);
-			//setPoint(vertices[vertexNum++], left, getHeight(left, back), back); //top left
-
+	
 			setPoint(colors[vertexNum], 0.f, 1.f, 0.f);
 			setTexCoords(texCoords[vertexNum], (float)i / (gridWidth / 4 - 2), (float)j / (gridDepth / 4 - 2));
 			setPoint(vertices[vertexNum++], left, getHeight(j, i), front);
-			//setPoint(vertices[vertexNum++], left, getHeight(left, front), front); //bottom left 
 		}
 	}
 }

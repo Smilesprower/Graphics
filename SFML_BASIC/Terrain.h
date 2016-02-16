@@ -29,7 +29,7 @@ class Terrain
 	void NormalVector(GLfloat p1[], GLfloat p2[], GLfloat p3[], GLfloat n[]);
 	void setTexCoords(vector v, float x, float y);
 	GLfloat normal[3];
-	int currentTris;
+	int vertexTri;
 	float tallestPoint;
 	
 public:

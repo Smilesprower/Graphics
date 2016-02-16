@@ -34,8 +34,14 @@ void main()
 	else if (height >= 0.001)
 		gl_FragColor = mix(sandTex, waterTex, (0.008 - height) / 0.007);
 	else
+	{
 		gl_FragColor = waterTex +Ispec;
+		//gl_FragColor = waterTex ;
+	}
 
    // write Total Color:  
-   gl_FragColor *= gl_Color;   
+   gl_FragColor *= gl_Color;  
+   
+   //Specular on everything
+   //gl_FragColor *= gl_Color + Ispec;   
 }

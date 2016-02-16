@@ -175,7 +175,6 @@ int main()
         glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); 
 		sf::Shader::bind(&shader);
 		GLfloat light_position[] = { 5.0, 2, 0.5, 0.1 };
-
 		glLightfv(GL_LIGHT0, GL_POSITION, light_position);   // set position
         // Apply some transformations 
         //initialise the worldview matrix
